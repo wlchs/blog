@@ -18,8 +18,8 @@ func mapPost(p models.Post) types.Post {
 		CreationTime: p.CreatedAt,
 	}
 }
-func mapPostMetadata(p models.Post) types.Post {
-	return types.Post{
+func mapPostMetadata(p models.Post) types.PostMetadata {
+	return types.PostMetadata{
 		URLHandle:    p.URLHandle,
 		Title:        p.Title,
 		Author:       p.Author.UserName,
@@ -28,8 +28,8 @@ func mapPostMetadata(p models.Post) types.Post {
 	}
 }
 
-func mapPosts(p []models.Post) []types.Post {
-	var posts []types.Post
+func mapPosts(p []models.Post) []types.PostMetadata {
+	var posts []types.PostMetadata
 
 	for _, post := range p {
 		posts = append(posts, mapPostMetadata(post))
@@ -50,7 +50,7 @@ func mapPostHandles(p []models.Post) []string {
 
 // GetPosts retrieves posts from the database.
 // The page parameter is used for pagination and defines the range of posts to retrieve.
-func GetPosts(page int) ([]types.Post, error) {
+func GetPosts(page int) ([]types.PostMetadata, error) {
 	startIndex := (page - 1) * pageSize
 	p, err := models.GetPosts(startIndex, pageSize)
 	return mapPosts(p), err
