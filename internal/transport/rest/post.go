@@ -27,11 +27,18 @@ func getPostsMiddleware(c *gin.Context) {
 
 	posts, err := services.GetPosts(page)
 	if err != nil {
-		_ = c.AbortWithError(http.StatusBadRequest, err)
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, posts)
+	pages, err := services.CountPostPages()
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	postsQueryData := types.PostsQueryData{Posts: posts, Pages: pages}
+	c.IndentedJSON(http.StatusOK, postsQueryData)
 }
 
 func getPostMiddleware(c *gin.Context) {

@@ -80,3 +80,13 @@ func AddPost(p types.Post) (Post, error) {
 
 	return Post{}, fmt.Errorf("error creating post with URL handle \"%s\"", newPost.URLHandle)
 }
+
+// CountPosts counts the overall number of posts in the database
+func CountPosts() (int, error) {
+	var count int64
+	if result := database.Agent.Model(&Post{}).Count(&count); result.Error != nil {
+		return 0, result.Error
+	}
+
+	return int(count), nil
+}

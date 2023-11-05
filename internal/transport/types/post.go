@@ -10,6 +10,11 @@ type PostMetadata struct {
 	CreationTime time.Time `json:"creationTime"`
 }
 
+type PostsQueryData struct {
+	Posts []PostMetadata `json:"posts"`
+	Pages int            `json:"pages"`
+}
+
 type Post struct {
 	URLHandle    string    `json:"urlHandle"`
 	Title        string    `json:"title"`

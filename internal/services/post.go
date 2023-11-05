@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/wlchs/blog/internal/models"
 	"github.com/wlchs/blog/internal/transport/types"
+	"math"
 )
 
 // pageSize defines the number of entries retrieved on one page
@@ -54,6 +55,15 @@ func GetPosts(page int) ([]types.PostMetadata, error) {
 	startIndex := (page - 1) * pageSize
 	p, err := models.GetPosts(startIndex, pageSize)
 	return mapPosts(p), err
+}
+
+// CountPostPages counts the number of pages available for pagination
+func CountPostPages() (int, error) {
+	i, err := models.CountPosts()
+	if err != nil {
+		return 0, err
+	}
+	return int(math.Ceil(float64(i) / pageSize)), nil
 }
 
 func GetPost(id string) (types.Post, error) {
