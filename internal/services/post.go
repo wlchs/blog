@@ -5,6 +5,9 @@ import (
 	"github.com/wlchs/blog/internal/transport/types"
 )
 
+// pageSize defines the number of entries retrieved on one page
+const pageSize = 5
+
 func mapPost(p models.Post) types.Post {
 	return types.Post{
 		URLHandle:    p.URLHandle,
@@ -45,8 +48,11 @@ func mapPostHandles(p []models.Post) []string {
 	return handles
 }
 
-func GetPosts() ([]types.Post, error) {
-	p, err := models.GetPosts()
+// GetPosts retrieves posts from the database.
+// The page parameter is used for pagination and defines the range of posts to retrieve.
+func GetPosts(page int) ([]types.Post, error) {
+	startIndex := (page - 1) * pageSize
+	p, err := models.GetPosts(startIndex, pageSize)
 	return mapPosts(p), err
 }
 

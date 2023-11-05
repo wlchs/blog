@@ -22,9 +22,17 @@ type Post struct {
 	UpdatedAt time.Time
 }
 
-func GetPosts() ([]Post, error) {
+// GetPosts retrieves a Post slice from the database containing pageSize elements starting from the startIndex.
+func GetPosts(startIndex int, pageSize int) ([]Post, error) {
 	var p []Post
-	if result := database.Agent.Preload("Author").Order("created_at DESC").Find(&p); result.Error != nil {
+	result := database.Agent.
+		Preload("Author").
+		Order("created_at DESC").
+		Limit(pageSize).
+		Offset(startIndex).
+		Find(&p)
+
+	if result.Error != nil {
 		return []Post{}, result.Error
 	}
 

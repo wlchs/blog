@@ -1,16 +1,31 @@
 package rest
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/wlchs/blog/internal/errortypes"
 	"github.com/wlchs/blog/internal/services"
 	"github.com/wlchs/blog/internal/transport/types"
+	"net/http"
+	"strconv"
 )
 
+// getPostMiddleware is the middleware responsible for querying posts. If the page parameter is provided, it is used for pagination.
 func getPostsMiddleware(c *gin.Context) {
-	posts, err := services.GetPosts()
+	page := 1
+	p, found := c.GetQuery("page")
+
+	if found {
+		pageInt, err := strconv.Atoi(p)
+
+		if err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+
+		page = pageInt
+	}
+
+	posts, err := services.GetPosts(page)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusBadRequest, err)
 		return
